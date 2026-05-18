@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>🗺️ עמאן - אוכל, קפה, קניות</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #e2e8f0; }
@@ -81,7 +81,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sa
   <button class="legend-btn street-btn" onclick="filterPlaces('street')">🌈 רחובות</button>
 </div>
 
-<div id="map"></div>
+<div id="map"><div id="map-loading" style="display:flex;align-items:center;justify-content:center;height:100%;background:#1e293b;color:#94a3b8;font-size:16px;">טוען מפה...</div></div>
 
 <div class="places-list" id="placesList"></div>
 
@@ -238,6 +238,9 @@ const places = [
 ];
 
 // ===== MAP =====
+// Hide loading when Leaflet is loaded
+const loadingEl = document.getElementById("map-loading");
+if(loadingEl) loadingEl.style.display = "none";
 const map = L.map('map', { zoomControl: true }).setView([31.955, 35.888], 12);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19, attribution: '© OpenStreetMap'
@@ -266,7 +269,14 @@ places.forEach((p,i)=>{
   markers.push(m); markerMap[i]=m; p._idx=i;
 });
 
-function renderList(filter){
+function // Fallback if Leaflet fails
+setTimeout(function() {
+  if(typeof L === "undefined") {
+    document.getElementById("map").innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100%;background:#1e293b;color:#ef4444;font-size:14px;text-align:center;padding:20px;\">❌ המפה לא נטענה. נסה שוב או השתמש בלינקי גוגל מפות ששלחתי</div>";
+  }
+}, 5000);
+
+renderList(filter){
   const el = document.getElementById('placesList');
   el.innerHTML = '';
   const filtered = filter==='all' ? places : places.filter(p=>p.cat===filter);
@@ -293,8 +303,22 @@ function filterPlaces(cat){
   document.querySelectorAll('#filters .legend-btn').forEach(b=>b.classList.remove('active'));
   document.querySelector(`#filters [onclick*="${cat}"]`)?.classList.add('active');
   markers.forEach((m,i)=>{ if(cat==='all'||places[i].cat===cat) map.addLayer(m); else map.removeLayer(m); });
-  renderList(cat);
+  // Fallback if Leaflet fails
+setTimeout(function() {
+  if(typeof L === "undefined") {
+    document.getElementById("map").innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100%;background:#1e293b;color:#ef4444;font-size:14px;text-align:center;padding:20px;\">❌ המפה לא נטענה. נסה שוב או השתמש בלינקי גוגל מפות ששלחתי</div>";
+  }
+}, 5000);
+
+renderList(cat);
 }
+
+// Fallback if Leaflet fails
+setTimeout(function() {
+  if(typeof L === "undefined") {
+    document.getElementById("map").innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100%;background:#1e293b;color:#ef4444;font-size:14px;text-align:center;padding:20px;\">❌ המפה לא נטענה. נסה שוב או השתמש בלינקי גוגל מפות ששלחתי</div>";
+  }
+}, 5000);
 
 renderList('all');
 const group = L.featureGroup(markers);
