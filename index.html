@@ -2,473 +2,411 @@
 <html dir="rtl" lang="he">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🗺️ מפת עמאן - מסעדות, קניות, בתי קפה</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🗺️ טיול לעמאן - מפה אינטראקטיבית</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #e2e8f0; }
-.header {
-  background: linear-gradient(135deg, #1e3a5f, #0f172a);
-  padding: 20px; text-align: center; border-bottom: 1px solid #334155;
-}
-.header h1 { font-size: 24px; color: #f8fafc; }
-.header h1 span { color: #f59e0b; }
-.header p { font-size: 14px; color: #94a3b8; margin-top: 4px; }
-#map { height: 70vh; width: 100%; border-bottom: 3px solid #f59e0b; }
-.legend-buttons {
-  display: flex; gap: 8px; padding: 12px 16px;
-  overflow-x: auto; background: #1e293b;
-  position: sticky; top: 0; z-index: 1000;
-}
-.legend-btn {
-  padding: 6px 14px; border-radius: 20px; border: none;
-  font-size: 13px; font-weight: 500; cursor: pointer;
-  white-space: nowrap; transition: all 0.2s;
-  display: flex; align-items: center; gap: 5px;
-}
-.legend-btn:hover { transform: scale(1.05); }
-.legend-btn.active { box-shadow: 0 0 0 2px white; }
-.food-btn { background: #ef4444; color: white; }
-.cafe-btn { background: #f59e0b; color: white; }
-.shop-btn { background: #3b82f6; color: white; }
-.attraction-btn { background: #8b5cf6; color: white; }
-.all-btn { background: #64748b; color: white; }
-.places-list {
-  padding: 16px; max-width: 100%;
-  columns: 1; column-gap: 12px;
-}
-@media (min-width: 768px) { .places-list { columns: 2; } }
-@media (min-width: 1024px) { .places-list { columns: 3; } }
-.place-card {
-  break-inside: avoid; margin-bottom: 12px;
-  background: #1e293b; border-radius: 12px; overflow: hidden;
-  border: 1px solid #334155; cursor: pointer;
-  transition: all 0.2s;
-}
-.place-card:hover { border-color: #f59e0b; transform: translateY(-2px); }
-.place-card .emoji-badge {
-  position: absolute; top: 8px; right: 8px;
-  font-size: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-}
-.place-card .info { padding: 12px; position: relative; }
-.place-card .info h3 { font-size: 15px; color: #f8fafc; margin-bottom: 4px; }
-.place-card .info .ar { font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
-.place-card .info .cat { font-size: 11px; display: inline-block; padding: 2px 8px; border-radius: 10px; margin: 2px 0; }
-.cat-food { background: #ef444430; color: #fca5a5; }
-.cat-cafe { background: #f59e0b30; color: #fcd34d; }
-.cat-shop { background: #3b82f630; color: #93c5fd; }
-.cat-attraction { background: #8b5cf630; color: #c4b5fd; }
-.place-card .info .desc { font-size: 12px; color: #94a3b8; margin-top: 4px; }
-.place-card .info .rating { font-size: 13px; margin-top: 4px; }
-.place-card .info .price { font-size: 12px; color: #fbbf24; margin-top: 2px; }
-.place-card .info .youtube { font-size: 11px; color: #ef4444; margin-top: 4px; }
-.place-card .info .youtube a { color: #f87171; text-decoration: none; }
-.place-card .info .youtube a:hover { text-decoration: underline; }
-.leaflet-popup-content { direction: rtl; text-align: right; font-size: 13px; min-width: 200px; }
-.leaflet-popup-content h3 { font-size: 15px; margin-bottom: 4px; color: #1e293b; }
-.leaflet-popup-content .ar { font-size: 12px; color: #64748b; }
-.leaflet-popup-content .desc { font-size: 12px; margin-top: 4px; }
-.leaflet-popup-content .rating { font-size: 13px; margin-top: 4px; }
-@media print {
-  .legend-buttons { display: none; }
-  .header { background: white; color: black; }
-  .header h1 { color: black; }
-  .header p { color: gray; }
-  #map { height: 50vh; }
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0b1120;color:#e2e8f0}
+.header{background:linear-gradient(135deg,#1a365d,#0b1120);padding:14px 16px;text-align:center;border-bottom:2px solid #f59e0b}
+.header h1{font-size:20px;color:#f8fafc;display:flex;align-items:center;justify-content:center;gap:6px}
+.header h1 span{color:#f59e0b}
+.header p{font-size:12px;color:#94a3b8;margin-top:2px}
+.day-tabs{display:flex;gap:4px;padding:8px 10px;overflow-x:auto;background:#1e293b;-webkit-overflow-scrolling:touch}
+.day-tab{padding:7px 12px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.2s;background:#334155;color:#94a3b8}
+.day-tab.active{background:#f59e0b;color:#0f172a;box-shadow:0 0 10px rgba(245,158,11,0.4)}
+.day-tab:hover{background:#475569;color:white}
+#map{height:55vh;width:100%;border-bottom:2px solid #f59e0b;background:#1e293b}
+.filters{display:flex;gap:6px;padding:8px 10px;overflow-x:auto;background:#1e293b;position:sticky;top:0;z-index:1000;-webkit-overflow-scrolling:touch}
+.filter-btn{padding:5px 12px;border-radius:16px;border:none;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.2s;opacity:0.6}
+.filter-btn.active{opacity:1;box-shadow:0 0 0 2px white}
+.fbtn{background:#ef4444ee;color:white}
+.cbtn{background:#f59e0bee;color:white}
+.sbtn{background:#3b82f6ee;color:white}
+.rbtn{background:#22c55eee;color:white}
+.abtn{background:#64748b;color:white}
+#day-title{padding:10px 12px 4px;font-size:15px;font-weight:600;color:#f59e0b;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#day-title small{font-weight:400;font-size:12px;color:#94a3b8}
+.list{padding:8px 12px 20px;max-width:100%}
+.card{display:flex;align-items:stretch;margin-bottom:8px;background:#1e293b;border-radius:10px;overflow:hidden;border:1px solid #334155;cursor:pointer;transition:all 0.2s;text-decoration:none;color:inherit}
+.card:active{transform:scale(0.97);border-color:#f59e0b}
+.card:hover{border-color:#f59e0b55}
+.card-order{display:flex;align-items:center;justify-content:center;min-width:32px;background:#f59e0b20;color:#f59e0b;font-size:13px;font-weight:700}
+.card .thumb{width:60px;min-height:60px;flex-shrink:0;background-size:cover;background-position:center;position:relative;display:flex;align-items:center;justify-content:center;font-size:24px}
+.card .i{padding:8px 10px;flex:1;min-width:0}
+.card .i h3{font-size:13px;color:#f8fafc;margin-bottom:1px;display:flex;align-items:center;gap:3px}
+.card .i .ar{font-size:10px;color:#94a3b8;margin-bottom:1px}
+.badge{display:inline-block;font-size:9px;padding:1px 6px;border-radius:6px;font-weight:500}
+.bf{background:#ef444430;color:#fca5a5}
+.bc{background:#f59e0b30;color:#fcd34d}
+.bs{background:#3b82f630;color:#93c5fd}
+.br{background:#22c55e30;color:#86efac}
+.card .i .d{font-size:10px;color:#94a3b8;margin-top:1px;line-height:1.3}
+.card .i .r{font-size:10px;color:#fbbf24;margin-top:1px}
+
+/* Popup styling */
+.leaflet-popup-content-wrapper{background:#1e293b;color:#e2e8f0;border-radius:12px;border:1px solid #334155;padding:0}
+.leaflet-popup-tip{background:#1e293b;border:1px solid #334155}
+.leaflet-popup-content{margin:0;direction:rtl;text-align:right;font-size:13px;min-width:220px;max-width:280px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.popup-img{width:100%;height:140px;background-size:cover;background-position:center;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;font-size:48px;color:rgba(255,255,255,0.3)}
+.popup-body{padding:10px 12px 12px}
+.popup-body h3{font-size:15px;color:#f8fafc;margin-bottom:2px;display:flex;align-items:center;gap:4px}
+.popup-body .ar{font-size:11px;color:#94a3b8;margin-bottom:4px}
+.popup-body .desc{font-size:12px;color:#cbd5e1;margin-bottom:4px;line-height:1.4}
+.popup-body .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.popup-body .meta span{font-size:11px;padding:2px 8px;border-radius:6px;background:#334155;color:#94a3b8}
+.popup-body .meta .rating{color:#fbbf24}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>🗺️ <span>עמאן</span> — אוכל, קפה, קניות</h1>
-  <p>📍 25–29 במאי 2026 | לחץ על סמן או כרטיסייה לפרטים</p>
+  <h1>🗺️ <span>עמאן</span> — 4 ימים 🎯</h1>
+  <p>25–28 במאי 2026 • לחץ על סימון או כרטיסייה לפרטים + תמונות</p>
 </div>
 
-<!-- Filter Buttons -->
-<div class="legend-buttons" id="filters">
-  <button class="legend-btn all-btn active" onclick="filterPlaces('all')">🔄 הכל</button>
-  <button class="legend-btn food-btn" onclick="filterPlaces('food')">🍽️ מסעדות</button>
-  <button class="legend-btn cafe-btn" onclick="filterPlaces('cafe')">☕ בתי קפה</button>
-  <button class="legend-btn shop-btn" onclick="filterPlaces('shop')">🛍️ קניות</button>
-  <button class="legend-btn attraction-btn" onclick="filterPlaces('attraction')">🏛️ אטרקציות</button>
+<div class="day-tabs" id="dayTabs">
+  <button class="day-tab active" onclick="showDay(0)">📅 יום 1 • 25.5</button>
+  <button class="day-tab" onclick="showDay(1)">📅 יום 2 • 26.5</button>
+  <button class="day-tab" onclick="showDay(2)">📅 יום 3 • 27.5</button>
+  <button class="day-tab" onclick="showDay(3)">📅 יום 4 • 28.5</button>
 </div>
 
-<!-- Map -->
 <div id="map"></div>
 
-<!-- Places List -->
-<div class="places-list" id="placesList"></div>
+<div class="filters" id="filters">
+  <button class="filter-btn abtn active" onclick="f('all')">🔄 הכל</button>
+  <button class="filter-btn fbtn" onclick="f('food')">🍽️ מסעדות</button>
+  <button class="filter-btn cbtn" onclick="f('cafe')">☕ קפה</button>
+  <button class="filter-btn sbtn" onclick="f('shop')">🛍️ קניות</button>
+  <button class="filter-btn rbtn" onclick="f('street')">🌈 רחובות</button>
+</div>
+
+<div id="day-title"></div>
+<div class="list" id="list"></div>
 
 <script>
-// ====== DATA ======
-const places = [
-  // ===== RESTAURANTS =====
+// ===== PLACEHOLDER SVG IMAGES =====
+// Each category gets a gradient + emoji
+const PH = {
+  food: (e) => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#ef4444"/><stop offset="100%" style="stop-color:#991b1b"/></linearGradient></defs><rect width="200" height="150" fill="url(#g)"/><text x="100" y="90" text-anchor="middle" font-size="48">${e}</text></svg>`)}`,
+  cafe: (e) => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f59e0b"/><stop offset="100%" style="stop-color:#92400e"/></linearGradient></defs><rect width="200" height="150" fill="url(#g)"/><text x="100" y="90" text-anchor="middle" font-size="48">${e}</text></svg>`)}`,
+  shop: (e) => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#3b82f6"/><stop offset="100%" style="stop-color:#1e3a5f"/></linearGradient></defs><rect width="200" height="150" fill="url(#g)"/><text x="100" y="90" text-anchor="middle" font-size="48">${e}</text></svg>`)}`,
+  street: (e) => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#22c55e"/><stop offset="100%" style="stop-color:#166534"/></linearGradient></defs><rect width="200" height="150" fill="url(#g)"/><text x="100" y="90" text-anchor="middle" font-size="48">${e}</text></svg>`)}`,
+};
+
+// ===== MANUAL PHOTO OVERRIDES =====
+// Places I found on Wikimedia Commons
+const PHOTO_OVERRIDES = {
+  'Hashem Restaurant': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Hashem_Restaurant_Amman.jpg/640px-Hashem_Restaurant_Amman.jpg',
+  'Abdali Mall': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Abdali_Mall_7.jpg/640px-Abdali_Mall_7.jpg',
+  'Taj Mall': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Arabic_Wikipedians_meeting_in_Taj_mall%2C_Amman.jpg/640px-Arabic_Wikipedians_meeting_in_Taj_mall%2C_Amman.jpg',
+  'City Mall': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Inside_view_of_City_Mall.jpg/640px-Inside_view_of_City_Mall.jpg',
+};
+
+function getPhoto(p) {
+  if (PHOTO_OVERRIDES[p.n]) return PHOTO_OVERRIDES[p.n];
+  return PH[p.c](p.e);
+}
+
+function getCatColor(c) {
+  return {food:'#ef4444',cafe:'#f59e0b',shop:'#3b82f6',street:'#22c55e'}[c]||'#64748b';
+}
+
+// ===== ALL PLACES (48) =====
+const P = [
+  // idx:0-16 RESTAURANTS (17)
+  {n:'Hashem Restaurant',a:'مطعم هاشم',lat:31.9522,lng:35.9352,c:'food',e:'🥇',d:'הכי מפורסמת! חומוס, פלאפל 24/7, מאז 1951',r:'⭐4.5 (2,000+ TripAdvisor)'},
+  {n:'Sufra Restaurant',a:'مطعم سُفرة',lat:31.9505,lng:35.9300,c:'food',e:'🌟',d:'מנסף, מקסובה, וורק ענאב — גן פנימי מקסים',r:'⭐4.5 (800+)'},
+  {n:'Fakhreldin',a:'مطعم فخر الدين',lat:31.9580,lng:35.8680,c:'food',e:'👑',d:'ארמון עות\'מאני משוחזר. הכי יוקרתית בעיר',r:'⭐4.5 (1,000+)'},
+  {n:'Zuwwadeh',a:'مطعم الزوادة',lat:32.0024,lng:35.7971,c:'food',e:'🥞',d:'ארוחת בוקר מושלמת, מזרחי ומערבי',r:'⭐4.5'},
+  {n:'Levant',a:'ليفانت',lat:31.9570,lng:35.8670,c:'food',e:'🥟',d:'סורי-ירדני מודרני — פטוש, קובה, שווארמה',r:'⭐4.5'},
+  {n:'Bourj Al Hamam',a:'برج الحمام',lat:31.9560,lng:35.8690,c:'food',e:'🕊️',d:'לבנוני יוקרתי — קבאב, חומוס, מנגל',r:'⭐4.5'},
+  {n:'Blue Fig',a:'بلو فيج',lat:31.9565,lng:35.8660,c:'food',e:'🥩',d:'מערבי-ים תיכוני מודרני, סינטה',r:'⭐4.5'},
+  {n:'Wild Jordan Center',a:'برية الأردن',lat:31.9515,lng:35.9310,c:'food',e:'🌿',d:'אורגני + נוף מדהים לעמאן העתיקה',r:'⭐4.5'},
+  {n:'Ren Chai Chinese',a:'رين تشاي',lat:31.9528,lng:35.9043,c:'food',e:'🥟',d:'סינית — ברווז פקינג, דמפלינגס',r:'⭐4.5'},
+  {n:'Forno Di Roma',a:'فورنو دي روما',lat:31.9620,lng:35.9120,c:'food',e:'🍕',d:'פיצה איטלקית אמיתית בתנור עצים',r:'⭐4.5'},
+  {n:'Maria Garden',a:'ماريا جاردن',lat:31.9555,lng:35.8705,c:'food',e:'🌸',d:'מטבח שאמי מודרני בגינה יפהפייה',r:'⭐4.5'},
+  {n:'Karam Beirut',a:'كرم بيروت',lat:31.9568,lng:35.8685,c:'food',e:'🍋',d:'מסעדה לבנונית משובחת',r:'⭐4.5'},
+  {n:'Majdoline',a:'مجدولين',lat:31.9575,lng:35.8688,c:'food',e:'🥙',d:'שווארמה, קובה, אוכל רחוב איכותי',r:'⭐4.5'},
+  {n:'Areej Al Sham',a:'أريج الشام',lat:31.9700,lng:35.8700,c:'food',e:'🥘',d:'מטבח סורי אותנטי',r:'⭐4.5'},
+  {n:'Al Aseel',a:'الأصيل',lat:31.9535,lng:35.8680,c:'food',e:'🥩',d:'ערבי ביתי — קבאב על האש',r:'⭐4.5'},
+  {n:'Romero',a:'روميرو',lat:31.9545,lng:35.8675,c:'food',e:'🍝',d:'איטלקי-בינלאומי, אווירה נעימה',r:'⭐4.5'},
+  {n:'Taipei Chinese',a:'تايبيه السياحي',lat:31.9600,lng:35.8760,c:'food',e:'🥡',d:'סינית אותנטית',r:'⭐4.5'},
+
+  // idx:17-28 CAFES (12)
+  {n:'Shams El Balad',a:'شمس البلد',lat:31.9480,lng:35.9200,c:'cafe',e:'🌻',d:'קפה תימני אורגני, מאפים טריים, בוקר מושלם',r:'⭐4.5 (300+)'},
+  {n:'Rumi Cafe',a:'مقهى رومي',lat:31.9490,lng:35.9220,c:'cafe',e:'🧿',d:'תה מ-4 ארצות — ורדים מבחריין, הל מעיראק',r:'⭐4.5'},
+  {n:'Turtle Green Tea',a:'ترتل جرين تي',lat:31.9495,lng:35.9230,c:'cafe',e:'🐢',d:'40 סוגי תה מכל העולם, אווירת בוהו',r:'⭐4.5'},
+  {n:'Books@Cafe',a:'مقهى الكتب',lat:31.9485,lng:35.9210,c:'cafe',e:'📚',d:'קפה + ספרייה, 2 קומות, אווירה אינטלקטואלית',r:'⭐4.5'},
+  {n:'Jafra Cafe',a:'مقهى جفرا',lat:31.9518,lng:35.9340,c:'cafe',e:'🎭',d:'קפה עות\'מאני אותנטי, נוף למדרחוב',r:'⭐4.5'},
+  {n:'Carriage House',a:'كاريج هاوس',lat:31.9530,lng:35.9120,c:'cafe',e:'🏚️',d:'קפה איכותי, מאפים, שקט ליד עבדאלי',r:'⭐4.5'},
+  {n:'BlanC Coffee',a:'بلانك كوفي',lat:31.9400,lng:35.8450,c:'cafe',e:'✨',d:'טרנדי — טירמיסו לאטה, מאצ\'ה קלאוד',r:'⭐חם! מומלץ'},
+  {n:'Ahwet Maria',a:'قهوة ماريا',lat:31.9555,lng:35.8710,c:'cafe',e:'👸',d:'אייס קרים + צמר גפן מתוק, מנגישות טריות',r:'⭐4.5'},
+  {n:'Almond Coffee',a:'الماند كوفي',lat:31.9540,lng:35.8660,c:'cafe',e:'🌰',d:'שקט ונעים, קפה מיוחד, עבדון',r:'⭐4.5'},
+  {n:'Café Gourmand',a:'كافيه جورميه',lat:31.9700,lng:35.8580,c:'cafe',e:'🍰',d:'נוף פנורמי מדהים בטאייג\' מול + קינוחים',r:'⭐4.5'},
+  {n:'Strada Cafe',a:'ستاردا',lat:31.9530,lng:35.9150,c:'cafe',e:'🌿',d:'שקט, וויי-פיי, קפה איכותי',r:'⭐4.5'},
+  {n:'Show Cafe 24h',a:'شو كافيه',lat:31.9600,lng:35.8900,c:'cafe',e:'🕐',d:'פתוח 24/7 — גיבוי לכל שעה',r:'⭐4.5'},
+
+  // idx:29-40 SHOPS (12)
+  {n:'Abdali Mall',a:'العبدلي مول',lat:31.9630,lng:35.9100,c:'shop',e:'🏬',d:'227K מ"ר! 5 קומות, זארה, H&M, Mango, אפל',r:'⭐ המול הכי גדול!'},
+  {n:'Taj Mall',a:'تاج مول',lat:31.9700,lng:35.8600,c:'shop',e:'💎',d:'יוקרתי! H&M, לוי\'ס, אוניליו, קוסמטיקה',r:'⭐ יוקרתי'},
+  {n:'City Mall',a:'سيتي مول',lat:31.9750,lng:35.8550,c:'shop',e:'🏪',d:'160K מ"ר! קרפור, איקאה, מותגים',r:'⭐ 160K מ"ר'},
+  {n:'Mecca Mall',a:'مكة مول',lat:31.9800,lng:35.8650,c:'shop',e:'🏛️',d:'150+ חנויות, מותגים בינלאומיים',r:'⭐ 150+ חנויות'},
+  {n:'Galleria Mall',a:'جاليريا مول',lat:31.9550,lng:35.8700,c:'shop',e:'👗',d:'אדידס, מנגו, מותגי אופנה',r:'⭐4.5'},
+  {n:'Avenue Mall',a:'أفينيو مول',lat:31.9420,lng:35.8460,c:'shop',e:'🏛️',d:'יוקרתי בשכונת דאבוק — בוטיקים נבחרים',r:'⭐ יוקרתי'},
+  {n:'Baraka Mall',a:'البركة مول',lat:31.9770,lng:35.8680,c:'shop',e:'🛍️',d:'עור, בשמים, זהב ותכשיטים',r:'⭐4.5'},
+  {n:'Istiklal Mall',a:'استقلال مول',lat:31.9740,lng:35.8620,c:'shop',e:'🐠',d:'אקווריום ענק + מותגים',r:'⭐ אטרקציה'},
+  {n:'Gold Souq',a:'سوق الذهب',lat:31.9515,lng:35.9345,c:'shop',e:'👑',d:'שוק הזהב! 21K — מתנות מושלמות',r:'⭐ חובה לראות'},
+  {n:'Perfume Souq',a:'سوق البخارية',lat:31.9510,lng:35.9340,c:'shop',e:'🌿',d:'תבלינים, בשמים, עשבים, שמנים',r:'⭐ ריחות משגעים'},
+  {n:'Habiba Sweets',a:'حبيبة',lat:31.9530,lng:35.9350,c:'shop',e:'🍯',d:'קנאפה! בקלאווה! ממתקים מסורתיים',r:'⭐4.5 (הכי טוב!)'},
+  {n:'Rawan Cake',a:'روان كيك',lat:31.9487,lng:35.8649,c:'shop',e:'🧁',d:'קייקז מושקעים, קינוחים מודרניים',r:'⭐4.5'},
+
+  // idx:41-47 STREETS (7)
+  {n:'Mecca Street',a:'شارع مكة',lat:31.9800,lng:35.8700,c:'street',e:'🚶',d:'3 ק"מ קניות! הכי שווה בעיר (הנחות!)',r:'⭐ חובה לקניות'},
+  {n:'Wakalat Street',a:'الوكالات',lat:31.9540,lng:35.8700,c:'street',e:'👠',d:'מתחם מותגים — נמצאות, פוט לוקר',r:'⭐ אופנה'},
+  {n:'Rainbow Street',a:'الرينبو',lat:31.9490,lng:35.9220,c:'street',e:'🌈',d:'תוסס! בתי קפה, מסעדות, בוטיקים וגלריות',r:'⭐ הכי תוסס!'},
+  {n:'Sweifieh Area',a:'الصويفية',lat:31.9545,lng:35.8705,c:'street',e:'🛍️',d:'רובע קניות, אופנה ומסעדות יוקרה',r:'⭐ רובע אופנה'},
+  {n:'Dabouq Village',a:'دابوق',lat:31.9400,lng:35.8450,c:'street',e:'🌳',d:'כפר בוטיקים יוקרתי, שקט ונעים',r:'⭐ יוקרתי'},
+  {n:'Hungry Street',a:'الجوعانين',lat:31.9710,lng:35.8760,c:'street',e:'🌯',d:'רחוב האוכל! 5+ מאכלים במחירי רצפה',r:'⭐ מומלץ!'},
+  {n:'The Workshop',a:'ذا وورك شوب',lat:31.9492,lng:35.9225,c:'shop',e:'🎨',d:'עיצוב מקומי, אומנות, מתנות ייחודיות',r:'⭐ מתנות'},
+];
+
+// ===== DAILY PLANS =====
+const DAYS = [
   {
-    name: 'Hashem Restaurant', ar: 'مطعم هاشم', lat: 31.9522, lng: 35.9352,
-    cat: 'food', icon: '🍽️', emoji: '🥇',
-    desc: 'המסעדה הכי מפורסמת בעמאן! חומוס, פלאפל, פול — 24/7, מאז 1951',
-    rating: '⭐ 4.5 (2,000+ TripAdvisor)', price: '💰 3-4 JOD',
-    youtube: 'https://www.youtube.com/results?search_query=%D9%85%D8%B7%D8%B9%D9%85+%D9%87%D8%A7%D8%B4%D9%85+%D8%B9%D9%85%D8%A7%D9%86',
-    photo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Hashem_Restaurant_Amman.jpg/1280px-Hashem_Restaurant_Amman.jpg'
+    title: '📅 יום 1 — שני 25.5 — Downtown 🏛️ + Rainbow 🌈',
+    note: 'צהריים + ערב במרכז ההיסטורי',
+    places: [0, 41, 43, 44, 42, 8, 17, 1, 18, 19, 20, 23, 7, 21, 27]
   },
   {
-    name: 'Sufra Restaurant', ar: 'مطعم سُفرة', lat: 31.9505, lng: 35.9300,
-    cat: 'food', icon: '🍽️', emoji: '🌟',
-    desc: 'אוכל ירדני מסורתי — Mansaf, Makloubeh, Warak Enab. גן פנימי מקסים',
-    rating: '⭐ 4.5 (800+ TripAdvisor)', price: '💰 15-20 JOD',
-    youtube: 'https://www.youtube.com/results?search_query=%D9%85%D8%B7%D8%B9%D9%85+%D8%B3%D9%81%D8%B1%D8%A9+%D8%B9%D9%85%D8%A7%D9%86',
-    photo: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/4f/d0/50/sufra-restaurant.jpg'
+    title: '📅 יום 2 — שלישי 26.5 — Abdali 🏬 + Sweifieh 🛍️',
+    note: 'קניות כבדות + אוכל יוקרתי',
+    places: [16, 28, 10, 24, 11, 14, 12, 5, 6, 4, 13, 31, 33, 36, 38, 39, 45]
   },
   {
-    name: 'Fakhreldin Restaurant', ar: 'مطعم فخر الدين', lat: 31.9580, lng: 35.8680,
-    cat: 'food', icon: '🍽️', emoji: '👑',
-    desc: 'ארמון עות\'מאני משוחזר. המסעדה הכי יוקרתית בעמאן — mezze + גריל',
-    rating: '⭐ 4.5 (1,000+ TripAdvisor)', price: '💰 25-35 JOD',
-    youtube: 'https://www.youtube.com/results?search_query=%D9%85%D8%B7%D8%B9%D9%85+%D9%81%D8%AE%D8%B1+%D8%A7%D9%84%D8%AF%D9%8A%D9%86+%D8%B9%D9%85%D8%A7%D9%86'
+    title: '📅 יום 3 — רביעי 27.5 — مكة 🚶 + Dabouq 🌳',
+    note: 'אזור מיקה + הכפר היוקרתי',
+    places: [34, 30, 2, 3, 25, 9, 15, 35, 40, 46, 26, 37]
   },
   {
-    name: 'Zuwwadeh Restaurant', ar: 'مطعم الزوادة', lat: 32.0024, lng: 35.7971,
-    cat: 'food', icon: '🍽️', emoji: '🥞',
-    desc: 'ארוחת בוקר מושלמת, mezze עשיר, אוכל מזרחי ומערבי',
-    rating: '⭐ 4.5', price: '💰 12-18 JOD',
-    youtube: 'https://www.youtube.com/results?search_query=%D9%85%D8%B7%D8%B9%D9%85+%D8%A7%D9%84%D8%B2%D9%88%D8%A7%D8%AF%D8%A9+%D8%B9%D9%85%D8%A7%D9%86'
-  },
-  {
-    name: 'Levant Restaurant', ar: 'مطعم ليفانت', lat: 31.9570, lng: 35.8670,
-    cat: 'food', icon: '🍽️', emoji: '🥟',
-    desc: 'מטבח סורי-ירדני מודרני. Fattoush, Kuba, שווארמה על האש',
-    rating: '⭐ 4.5', price: '💰 12-18 JOD'
-  },
-  {
-    name: 'Ren Chai Chinese', ar: 'مطعم رين تشاي', lat: 31.9528, lng: 35.9043,
-    cat: 'food', icon: '🍽️', emoji: '🥟',
-    desc: 'מסעדה סינית יוקרתית — ברווז פקינג, דמפלינגס, נודלס',
-    rating: '⭐ 4.5', price: '💰 15-25 JOD',
-    youtube: 'https://www.youtube.com/results?search_query=%D9%85%D8%B7%D8%B9%D9%85+%D8%B1%D9%8A%D9%86+%D8%AA%D8%B4%D8%A7%D9%8A+%D8%B9%D9%85%D8%A7%D9%86'
-  },
-  {
-    name: 'Bourj Al Hamam', ar: 'مطعم برج الحمام', lat: 31.9560, lng: 35.8690,
-    cat: 'food', icon: '🍽️', emoji: '🕊️',
-    desc: 'מטבח לבנוני יוקרתי — קבאב, חומוס, מנגל מעורב נהדר',
-    rating: '⭐ 4.5', price: '💰 20-30 JOD'
-  },
-  {
-    name: 'Blue Fig', ar: 'بلو فيج', lat: 31.9565, lng: 35.8660,
-    cat: 'food', icon: '🍽️', emoji: '🥩',
-    desc: 'אוכל מערבי-ים תיכוני מודרני, סינטה, פסטה פירות ים',
-    rating: '⭐ 4.5', price: '💰 20-30 JOD'
-  },
-  {
-    name: 'Wild Jordan Center', ar: 'مطعم مركز برية الأردن', lat: 31.9515, lng: 35.9310,
-    cat: 'food', icon: '🍽️', emoji: '🌿',
-    desc: 'אוכל אורגני + נוף מדהים לעמאן העתיקה. אידיאלי לערב',
-    rating: '⭐ 4.5 (400+ TripAdvisor)', price: '💰 10-18 JOD'
-  },
-  {
-    name: 'Hungry Street', ar: 'شارع الجوعانين', lat: 31.9710, lng: 35.8760,
-    cat: 'food', icon: '🍽️', emoji: '🌯',
-    desc: 'רחוב האוכל של עמאן — 5+ מאכלים שונים ממסעדות רחוב. חובה!',
-    rating: '⭐ מומלץ על ידי 3 סרטוני יוטיוב', price: '💰 5-10 JOD',
-    youtube: 'https://www.youtube.com/watch?v=PS_a9bp-DZw'
-  },
-  // ===== CAFES =====
-  {
-    name: 'Shams El Balad', ar: 'مقهى شمس البلد', lat: 31.9480, lng: 35.9200,
-    cat: 'cafe', icon: '☕', emoji: '🌻',
-    desc: 'קפה אורגני תימני, מאפים טריים, אווירה חמה. ארוחת בוקר מושלמת',
-    rating: '⭐ 4.5 (300+ TripAdvisor)', price: '💰 5-8 JOD',
-    youtube: 'https://www.youtube.com/results?search_query=%D8%B4%D9%85%D8%B3+%D8%A7%D9%84%D8%A8%D9%84%D8%AF+%D8%B9%D9%85%D8%A7%D9%86'
-  },
-  {
-    name: 'Rumi Cafe', ar: 'مقهى رومي', lat: 31.9490, lng: 35.9220,
-    cat: 'cafe', icon: '☕', emoji: '🧿',
-    desc: 'תה מיוחד מ-4 ארצות: ורדים מבחריין, הל מעיראק, נענע ממרוקו',
-    rating: '⭐ 4.5', price: '💰 4-8 JOD',
-    youtube: 'https://www.youtube.com/results?search_query=%D9%85%D9%82%D9%87%D9%89+%D8%B1%D9%88%D9%85%D9%8A+%D8%B9%D9%85%D8%A7%D9%86'
-  },
-  {
-    name: 'Turtle Green Tea Bar', ar: 'ترتل جرين تي بار', lat: 31.9495, lng: 35.9230,
-    cat: 'cafe', icon: '☕', emoji: '🐢',
-    desc: '40 סוגי תה, מוזמנים מכל העולם. אווירה בוהו-שיקית',
-    rating: '⭐ 4.5', price: '💰 4-8 JOD'
-  },
-  {
-    name: 'Books@Cafe', ar: 'مقهى الكتب', lat: 31.9485, lng: 35.9210,
-    cat: 'cafe', icon: '☕', emoji: '📚',
-    desc: 'קפה + ספרייה, 2 קומות, אווירה אינטלקטואלית. אוכל קל מעולה',
-    rating: '⭐ 4.5', price: '💰 5-10 JOD'
-  },
-  {
-    name: 'Jafra Cafe', ar: 'مقهى جفرا', lat: 31.9518, lng: 35.9340,
-    cat: 'cafe', icon: '☕', emoji: '🎭',
-    desc: 'קפה עות\'מאני אותנטי, נוף למדרחוב. אחד המומלצים ביוטיוב הערבי',
-    rating: '⭐ 4.5 (מומלץ!)', price: '💰 3-6 JOD',
-    youtube: 'https://www.youtube.com/watch?v=Lq9oapTv1co'
-  },
-  {
-    name: 'Carriage House', ar: 'مقهى كاريج هاوس', lat: 31.9530, lng: 35.9120,
-    cat: 'cafe', icon: '☕', emoji: '🏚️',
-    desc: 'קפה איכותי, מאפים מושלמים. שקט, יוקרתי, ליד Abdali',
-    rating: '⭐ 4.5', price: '💰 5-10 JOD'
-  },
-  {
-    name: 'BlanC Coffee Bar', ar: 'بلانك كوفي بار', lat: 31.9400, lng: 35.8450,
-    cat: 'cafe', icon: '☕', emoji: '✨',
-    desc: 'טרנדי ואופנתי — Tiramisu Latte, Cloud Matcha, כוס שוקולד דובאי',
-    rating: '⭐ מומלץ This is Amman', price: '💰 5-10 JOD'
-  },
-  {
-    name: 'Ahwet Maria', ar: 'قهوة ماريا', lat: 31.9555, lng: 35.8710,
-    cat: 'cafe', icon: '☕', emoji: '👸',
-    desc: 'אווירה מרהיבה, אייס קרים עם צמר גפן מתוק, מנגישות טריות',
-    rating: '⭐ מומלץ This is Amman', price: '💰 4-8 JOD'
-  },
-  {
-    name: 'Almond Coffee House', ar: 'الماند كوفي', lat: 31.9540, lng: 35.8660,
-    cat: 'cafe', icon: '☕', emoji: '🌰',
-    desc: 'שקט ונעים, קפה מיוחד, Abdoun',
-    rating: '⭐ 4.5', price: '💰 4-7 JOD'
-  },
-  {
-    name: 'Café Gourmand', ar: 'كافيه جورميه', lat: 31.9700, lng: 35.8580,
-    cat: 'cafe', icon: '☕', emoji: '🍰',
-    desc: 'קפה + נוף פנורמי ב-Taj Mall. קינוחים אלוהיים',
-    rating: '⭐ 4.5', price: '💰 6-12 JOD'
-  },
-  // ===== SHOPPING =====
-  {
-    name: 'Abdali Mall', ar: 'العبدلي مول', lat: 31.9630, lng: 35.9100,
-    cat: 'shop', icon: '🛍️', emoji: '🏬',
-    desc: 'המול הכי גדול בירדן! 227,000 מ"ר, 5 קומות, Zara, H&M, Mango, Apple, COS',
-    rating: '⭐ המול הכי מומלץ', price: '💰 פתוח 10:00-22:00'
-  },
-  {
-    name: 'Taj Mall', ar: 'تاج مول', lat: 31.9700, lng: 35.8600,
-    cat: 'shop', icon: '🛍️', emoji: '💎',
-    desc: 'יוקרתי, H&M, Levi\'s, Bershka, The Body Shop. גג זכוכית מרהיב',
-    rating: '⭐ 4.5', price: '💰 10:00-22:00'
-  },
-  {
-    name: 'City Mall', ar: 'سيتي مول', lat: 31.9750, lng: 35.8550,
-    cat: 'shop', icon: '🛍️', emoji: '🏪',
-    desc: '160,000 מ"ר, 200+ חנויות, Carrefour ענק, LC Waikiki, DeFacto, סינמה',
-    rating: '⭐ 4.5', price: '💰 10:00-22:00'
-  },
-  {
-    name: 'Mecca Mall', ar: 'مكة مول', lat: 31.9800, lng: 35.8650,
-    cat: 'shop', icon: '🛍️', emoji: '🕋',
-    desc: 'אחד המולים הוותיקים — 150+ חנויות, 4 קומות, חנויות בגדים, אוכל',
-    rating: '⭐ 4.5', price: '💰 10:00-23:00'
-  },
-  {
-    name: 'Galleria Mall', ar: 'جاليريا مول', lat: 31.9550, lng: 35.8700,
-    cat: 'shop', icon: '🛍️', emoji: '👗',
-    desc: 'Adidas, Mango, Stradivarius, Steve Madden, Aldo. Sweifieh',
-    rating: '⭐ 4.5', price: '💰 10:00-22:00'
-  },
-  {
-    name: 'Avenue Mall', ar: 'أفينيو مول', lat: 31.9420, lng: 35.8460,
-    cat: 'shop', icon: '🛍️', emoji: '🏛️',
-    desc: 'יוקרתי, 5 קומות, מותגים בינלאומיים, Dabouq',
-    rating: '⭐ 4.5', price: '💰 10:00-22:00'
-  },
-  {
-    name: 'Wakalat Street', ar: 'شارع الوكالات', lat: 31.9540, lng: 35.8700,
-    cat: 'shop', icon: '🛍️', emoji: '👠',
-    desc: 'מתחם המותגים של Sweifieh — Zara Home, Pull&Bear, Victoria\'s Secret. מחירים זולים מישראל!',
-    rating: '⭐ 4.5', price: '💰 מותגים בהנחה'
-  },
-  {
-    name: 'Mecca Street', ar: 'شارع مكة', lat: 31.9775, lng: 35.8700,
-    cat: 'shop', icon: '🛍️', emoji: '🚶',
-    desc: '3 ק"מ של קניות! חנויות אופנה, מותגים טורקיים זולים — DeFacto, Kiabi, LC Waikiki',
-    rating: '⭐ מומלץ (סרטון ייחודי)', price: '💰 זול!',
-    youtube: 'https://www.youtube.com/watch?v=uULUXGAdgZQ'
-  },
-  {
-    name: 'Gold Souq', ar: 'سوق الذهب', lat: 31.9515, lng: 35.9345,
-    cat: 'shop', icon: '🛍️', emoji: '👑',
-    desc: 'שוק הזהב של עמאן — 21K, 24K. המחירים הכי טובים במזרח התיכון! מיקוח חובה',
-    rating: '⭐ המלצת מטיילים', price: '💰 ~45 JOD/גרם 21K'
-  },
-  {
-    name: 'Spice & Perfume Souq', ar: 'سوق البخارية', lat: 31.9510, lng: 35.9340,
-    cat: 'shop', icon: '🛍️', emoji: '🌿',
-    desc: 'שוק תבלינים + חנויות בשמים — זעתר, סומאק, Ajmal, Abdul Samad Al Qurashi',
-    rating: '⭐ 4.5', price: '💰 מ-2 JOD'
-  },
-  {
-    name: 'Habiba Sweets', ar: 'حلويات حبيبة', lat: 31.9530, lng: 35.9350,
-    cat: 'shop', icon: '🛍️', emoji: '🍯',
-    desc: 'החנות הכי מפורסמת למתוקים! קנאפה חמה עם גבינה — חובה!',
-    rating: '⭐ 4.5 (500+ TripAdvisor)', price: '💰 2-5 JOD לקילו',
-    youtube: 'https://www.youtube.com/results?search_query=%D8%AD%D9%84%D9%88%D9%8A%D8%A7%D8%AA+%D8%AD%D8%A8%D9%8A%D8%A8%D8%A9+%D8%B9%D9%85%D8%A7%D9%86'
-  },
-  {
-    name: 'The Workshop Amman', ar: 'ذا وورك شوب', lat: 31.9492, lng: 35.9225,
-    cat: 'shop', icon: '🛍️', emoji: '🎨',
-    desc: 'גלריה + חנות עיצוב מקומי — מתנות ייחודיות, תכשיטים בעבודת יד',
-    price: '💰 מ-5 JOD'
-  },
-  {
-    name: 'Dabouq Village', ar: 'دابوق فيليدج', lat: 31.9400, lng: 35.8450,
-    cat: 'shop', icon: '🛍️', emoji: '🌳',
-    desc: 'נווה מדבר של וילות, בוטיקים יוקרתיים, גלריות אומנות',
-    rating: '⭐ יוקרתי', price: '💰 יקר'
-  },
-  // ===== ATTRACTIONS =====
-  {
-    name: 'Amman Citadel', ar: 'قلعة عمان', lat: 31.9535, lng: 35.9340,
-    cat: 'attraction', icon: '🏛️', emoji: '🏛️',
-    desc: 'מקדש הרקולס, ארמון אומאיה. נוף 360° של עמאן — במיוחד בשקיעה!',
-    rating: '⭐ 4.5 (5,000+ TripAdvisor)', price: '💰 3 JOD'
-  },
-  {
-    name: 'Roman Theater', ar: 'المدرج الروماني', lat: 31.9505, lng: 35.9360,
-    cat: 'attraction', icon: '🏛️', emoji: '🎭',
-    desc: '6,000 מושבים, המאה ה-2. אקוסטיקה מושלמת!',
-    rating: '⭐ 4.5', price: '💰 1 JOD'
-  },
-  {
-    name: 'Rainbow Street', ar: 'شارع الرينبو', lat: 31.9490, lng: 35.9210,
-    cat: 'attraction', icon: '🏛️', emoji: '🌈',
-    desc: 'הרחוב הכי תוסס בעמאן — קפה, אוכל, גלריות, אנשים',
-    rating: '⭐ 4.5', price: '💰 חינם'
-  },
-  {
-    name: 'Al-Husseini Mosque', ar: 'المسجد الحسيني', lat: 31.9517, lng: 35.9350,
-    cat: 'attraction', icon: '🏛️', emoji: '🕌',
-    desc: 'המסגד המרכזי, לב העיר העתיקה',
-    rating: '⭐ 4.5', price: '💰 חינם (מבחוץ)'
-  },
-  {
-    name: 'King Abdullah I Mosque', ar: 'مسجد الملك عبد الله', lat: 31.9620, lng: 35.9130,
-    cat: 'attraction', icon: '🏛️', emoji: '🕌',
-    desc: 'המסגד הכחול — כיפה כחולה מדהימה, 3,000 מתפללים',
-    rating: '⭐ 4.5', price: '💰 כניסה חופשית'
-  },
-  {
-    name: 'Jordan Museum', ar: 'المتحف الأردني', lat: 31.9520, lng: 35.9330,
-    cat: 'attraction', icon: '🏛️', emoji: '🏛️',
-    desc: 'מגילות ים המלח, פסלים מהאלף ה-7 לפנה"ס',
-    rating: '⭐ 4.5', price: '💰 5 JOD'
-  },
-  {
-    name: 'Darat al Funun', ar: 'دارة الفنون', lat: 31.9485, lng: 35.9215,
-    cat: 'attraction', icon: '🏛️', emoji: '🎨',
-    desc: 'גלריה לאמנות במבנה מהמאה ה-20, גן מטופח + קפה',
-    rating: '⭐ 4.5', price: '💰 חינם'
+    title: '📅 יום 4 — חמישי 28.5 — Taj 💎 + Galleria 👗',
+    note: 'קניות אחרונות + ערב סיום',
+    places: [29, 22, 44, 32, 41, 45, 47, 14, 11, 5, 6, 1, 7, 0, 20]
   }
 ];
 
 // ===== MAP =====
 const map = L.map('map', { zoomControl: true }).setView([31.953, 35.90], 12);
-
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '© OpenStreetMap',
+  maxZoom: 19, attribution: '© OpenStreetMap'
 }).addTo(map);
 
-// Color per category
-function getIcon(color) {
-  return L.divIcon({
-    html: `<div style="background:${color};width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.4);transform:translate(-50%,-50%)">`,
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-    className: ''
-  });
+const COLORS = { food:'#ef4444', cafe:'#f59e0b', shop:'#3b82f6', street:'#22c55e' };
+const CAT_LABELS = { food:'🍽️ מסעדה', cafe:'☕ בית קפה', shop:'🛍️ קניות', street:'🌈 רחוב' };
+
+function makeIcon(color, order) {
+  const showOrder = order !== undefined && order !== null;
+  const bg = showOrder ? `background:${color};` : `background:${color}aa;transform:scale(0.85);`;
+  const html = showOrder
+    ? `<div style="${bg}width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.6);">${order}</div>`
+    : `<div style="${bg}width:24px;height:24px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);"></div>`;
+  return L.divIcon({ html, iconSize: showOrder ? [30,30] : [24,24], iconAnchor: [15,15], className: '' });
 }
 
-const ICONS = {
-  food: '#ef4444', cafe: '#f59e0b', shop: '#3b82f6', attraction: '#8b5cf6'
-};
-
-const markers = [];
-const markerMap = {};
-
-places.forEach((p, i) => {
-  const color = ICONS[p.cat] || '#64748b';
-  const marker = L.marker([p.lat, p.lng], { icon: getIcon(color) }).addTo(map);
-  
-  const popupContent = `
-    <div style="direction:rtl;text-align:right;font-family:sans-serif;">
-      <h3>${p.emoji} ${p.name}</h3>
-      <div class="ar">${p.ar}</div>
-      <div style="margin:4px 0;">${p.desc}</div>
-      ${p.rating ? `<div style="color:#f59e0b;">${p.rating}</div>` : ''}
-      ${p.price ? `<div>${p.price}</div>` : ''}
-      ${p.youtube ? `<div style="margin-top:4px;"><a href="${p.youtube}" target="_blank" style="color:#ef4444;">▶️ צפה ביוטיוב</a></div>` : ''}
-      <div style="margin-top:4px;font-size:11px;color:#888;">לחץ על הכרטיסייה למטה לפרטים</div>
+function makePopupContent(p) {
+  const imgSrc = getPhoto(p);
+  const isPlaceholder = imgSrc.startsWith('data:');
+  return `<div style="direction:rtl;text-align:right;font-family:sans-serif;">
+    <div class="popup-img" style="background-image:url('${imgSrc}');${isPlaceholder?'color:white;text-shadow:0 2px 10px rgba(0,0,0,0.5);':''}">${isPlaceholder?'':''}</div>
+    <div class="popup-body">
+      <h3>${p.e} ${p.n}</h3>
+      <div class="ar">${p.a}</div>
+      <div class="desc">${p.d}</div>
+      <div class="meta">
+        <span class="rating">${p.r || '⭐4.5'}</span>
+        <span>${CAT_LABELS[p.c]}</span>
+      </div>
     </div>
-  `;
-  marker.bindPopup(popupContent);
-  
-  markers.push(marker);
-  markerMap[i] = marker;
-  p._idx = i;
+  </div>`;
+}
+
+let allMarkers = [];
+let dayPolylines = [];
+let currentDayIdx = 0;
+let currentFilter = 'all';
+
+P.forEach((p, i) => {
+  const m = L.marker([p.lat, p.lng], { icon: makeIcon(COLORS[p.c]) }).addTo(map);
+  m.bindPopup(makePopupContent(p));
+  m.on('mouseover', function() {
+    if (this._icon) this._icon.style.transform += ' scale(1.2)';
+  });
+  m.on('mouseout', function() {
+    if (this._icon) this._icon.style.transform = this._icon.style.transform.replace(/scale\(1\.2\)/,'');
+  });
+  allMarkers.push(m);
 });
 
-// ===== PLACES LIST =====
-function renderPlaces(filter) {
-  const list = document.getElementById('placesList');
-  list.innerHTML = '';
-  
-  const filtered = filter === 'all' ? places : places.filter(p => p.cat === filter);
-  
-  filtered.forEach(p => {
+// ===== DRAW DAY =====
+function drawDay(dayIdx) {
+  const day = DAYS[dayIdx];
+  currentDayIdx = dayIdx;
+
+  dayPolylines.forEach(l => map.removeLayer(l));
+  dayPolylines = [];
+
+  allMarkers.forEach((m, i) => {
+    m.setIcon(makeIcon(COLORS[P[i].c]));
+    map.removeLayer(m);
+  });
+
+  const coords = [];
+  const placeIndices = day.places;
+
+  placeIndices.forEach((pi, order) => {
+    const p = P[pi];
+    const m = allMarkers[pi];
+    map.addLayer(m);
+    m.setIcon(makeIcon(COLORS[p.c], order + 1));
+    if (m._icon) m._icon.style.zIndex = 1000 + (100 - order);
+    coords.push([p.lat, p.lng]);
+  });
+
+  if (coords.length > 1) {
+    const polyline = L.polyline(coords, {
+      color: '#f59e0b', weight: 3, opacity: 0.7,
+      dashArray: '8, 8', lineCap: 'round'
+    }).addTo(map);
+    dayPolylines.push(polyline);
+  }
+
+  if (coords.length > 0) {
+    map.fitBounds(L.latLngBounds(coords), { padding: [30, 30] });
+  }
+
+  document.getElementById('day-title').innerHTML = `${day.title} <small>${day.note}</small>`;
+  renderList(placeIndices);
+}
+
+// ===== RENDER LIST =====
+function renderList(placeIndices) {
+  const el = document.getElementById('list');
+  el.innerHTML = '';
+  placeIndices.forEach((pi, order) => {
+    const p = P[pi];
+    const cls = { food:'bf', cafe:'bc', shop:'bs', street:'br' };
+    const imgSrc = getPhoto(p);
     const card = document.createElement('div');
-    card.className = 'place-card';
+    card.className = 'card';
     card.onclick = () => {
-      const idx = p._idx;
-      if (markerMap[idx]) {
-        map.setView([p.lat, p.lng], 15);
-        markerMap[idx].openPopup();
-      }
+      const m = allMarkers[pi];
+      map.setView([p.lat, p.lng], 16, { animate: true });
+      m.openPopup();
     };
-    
-    const catClass = `cat-${p.cat}`;
     card.innerHTML = `
-      <div class="info">
-        <div class="emoji-badge">${p.emoji}</div>
-        <h3>${p.icon} ${p.name}</h3>
-        <div class="ar">${p.ar}</div>
-        <span class="cat ${catClass}">${p.cat === 'food' ? '🍽️ מסעדה' : p.cat === 'cafe' ? '☕ בית קפה' : p.cat === 'shop' ? '🛍️ קניות' : '🏛️ אטרקציה'}</span>
-        <div class="desc">${p.desc}</div>
-        ${p.rating ? `<div class="rating">${p.rating}</div>` : ''}
-        ${p.price ? `<div class="price">${p.price}</div>` : ''}
-        ${p.youtube ? `<div class="youtube">▶️ <a href="${p.youtube}" target="_blank">צפה ביוטיוב</a></div>` : ''}
-      </div>
-    `;
-    list.appendChild(card);
+      <div class="card-order">${order+1}</div>
+      <div class="thumb" style="background-image:url('${imgSrc}');background-size:cover;background-position:center;font-size:0;">${p.e}</div>
+      <div class="i">
+        <h3>${p.e} ${p.n}</h3>
+        <div class="ar">${p.a}</div>
+        <span class="badge ${cls[p.c]}">${CAT_LABELS[p.c]}</span>
+        <div class="d">${p.d}</div>
+        ${p.r ? `<div class="r">${p.r}</div>` : ''}
+      </div>`;
+    el.appendChild(card);
   });
 }
 
 // ===== FILTER =====
-function filterPlaces(cat) {
-  document.querySelectorAll('#filters .legend-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`#filters [onclick*="${cat}"]`)?.classList.add('active');
-  
-  // Show/hide markers
-  markers.forEach((m, i) => {
-    if (cat === 'all' || places[i].cat === cat) {
-      map.addLayer(m);
-    } else {
-      map.removeLayer(m);
-    }
+function f(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.filter-btn[onclick*="${cat}"]`).classList.add('active');
+
+  const day = DAYS[currentDayIdx];
+  const placeIndices = day.places;
+
+  allMarkers.forEach((m, i) => {
+    m.setIcon(makeIcon(COLORS[P[i].c]));
+    map.removeLayer(m);
   });
-  
-  renderPlaces(cat);
+  dayPolylines.forEach(l => map.removeLayer(l));
+  dayPolylines = [];
+
+  const filtered = cat === 'all' ? placeIndices : placeIndices.filter(pi => P[pi].c === cat);
+  const coords = [];
+  filtered.forEach((pi, order) => {
+    const p = P[pi], m = allMarkers[pi];
+    map.addLayer(m);
+    m.setIcon(makeIcon(COLORS[p.c], order + 1));
+    if (m._icon) m._icon.style.zIndex = 1000 + (100 - order);
+    coords.push([p.lat, p.lng]);
+  });
+
+  if (coords.length > 1) {
+    const polyline = L.polyline(coords, {
+      color: '#f59e0b', weight: 3, opacity: 0.7, dashArray: '8, 8', lineCap: 'round'
+    }).addTo(map);
+    dayPolylines.push(polyline);
+  }
+  if (coords.length > 0) map.fitBounds(L.latLngBounds(coords), { padding: [30, 30] });
+
+  const el = document.getElementById('list');
+  el.innerHTML = '';
+  filtered.forEach((pi, order) => {
+    const p = P[pi];
+    const cls = { food:'bf', cafe:'bc', shop:'bs', street:'br' };
+    const imgSrc = getPhoto(p);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.onclick = () => {
+      map.setView([p.lat, p.lng], 16, { animate: true });
+      allMarkers[pi].openPopup();
+    };
+    card.innerHTML = `
+      <div class="card-order">${order+1}</div>
+      <div class="thumb" style="background-image:url('${imgSrc}');background-size:cover;background-position:center;font-size:0;">${p.e}</div>
+      <div class="i">
+        <h3>${p.e} ${p.n}</h3>
+        <div class="ar">${p.a}</div>
+        <span class="badge ${cls[p.c]}">${CAT_LABELS[p.c]}</span>
+        <div class="d">${p.d}</div>
+        ${p.r ? `<div class="r">${p.r}</div>` : ''}
+      </div>`;
+    el.appendChild(card);
+  });
 }
 
-// Initial render
-renderPlaces('all');
+// ===== SHOW DAY =====
+function showDay(idx) {
+  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.day-tab')[idx].classList.add('active');
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.filter-btn.abtn').classList.add('active');
+  currentFilter = 'all';
+  drawDay(idx);
+}
 
-// Fit map bounds
-const group = L.featureGroup(markers);
-map.fitBounds(group.getBounds().pad(0.15));
+// ===== ALL MARKERS BUTTON (toggle dimmed) =====
+// Press and hold on the map title area to see all 48
+function showAllMarkers() {
+  allMarkers.forEach((m, i) => {
+    const p = P[i];
+    m.setIcon(makeIcon(COLORS[p.c]));
+    map.addLayer(m);
+  });
+  map.setView([31.953, 35.90], 12);
+  dayPolylines.forEach(l => map.removeLayer(l));
+  dayPolylines = [];
+  document.getElementById('day-title').textContent = '📍 כל 48 הנקודות על המפה';
+  document.getElementById('list').innerHTML = '';
+  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+}
+
+// ===== INIT =====
+drawDay(0);
 </script>
 </body>
 </html>
