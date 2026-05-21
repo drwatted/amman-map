@@ -99,13 +99,21 @@ const PH_COLORS = {
 // ===== MANUAL PHOTO OVERRIDES =====
 // Places I found on Wikimedia Commons
 const PHOTO_OVERRIDES = {
-  'Hashem Restaurant': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Hashem_Restaurant_Amman.jpg/640px-Hashem_Restaurant_Amman.jpg',
-  'Abdali Mall': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Abdali_Mall_7.jpg/640px-Abdali_Mall_7.jpg',
-  'Taj Mall': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Arabic_Wikipedians_meeting_in_Taj_mall%2C_Amman.jpg/640px-Arabic_Wikipedians_meeting_in_Taj_mall%2C_Amman.jpg',
-  'City Mall': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Inside_view_of_City_Mall.jpg/640px-Inside_view_of_City_Mall.jpg',
-};
-
-function getPhoto(p) {
+  'Abdali Mall': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Abdali_Mall_7.jpg/500px-Abdali_Mall_7.jpg',
+  'Avenue Mall': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Avenue_Mall_1.png/500px-Avenue_Mall_1.png',
+  'City Mall': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Inside_view_of_City_Mall.jpg/500px-Inside_view_of_City_Mall.jpg',
+  'Dabouq Village': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Dabouq.jpg/500px-Dabouq.jpg',
+  'Gold Souq': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/The_Gold_souq%2C_downtown_Amman.png/500px-The_Gold_souq%2C_downtown_Amman.png',
+  'Habiba Sweets': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Kanafa.jpg/500px-Kanafa.jpg',
+  'Hashem Restaurant': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Hashem_Restaurant_Amman_1.jpg/500px-Hashem_Restaurant_Amman_1.jpg',
+  'Mecca Mall': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Mecca_mall.jpg/500px-Mecca_mall.jpg',
+  'Mecca Street': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Mecca_Street_004.JPG/500px-Mecca_Street_004.JPG',
+  'Rainbow Street': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Rainbow_Road%2C_Amman.jpg/500px-Rainbow_Road%2C_Amman.jpg',
+  'Sweifieh': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Agencies_Street_Amman_Summer_%2710.jpg/500px-Agencies_Street_Amman_Summer_%2710.jpg',
+  'Taj Mall': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Arabic_Wikipedians_meeting_in_Taj_mall%2C_Amman.jpg/500px-Arabic_Wikipedians_meeting_in_Taj_mall%2C_Amman.jpg',
+  'Wakalat Street': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Wakalat_street.jpg/500px-Wakalat_street.jpg',
+  'Wild Jordan Center': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Wild_Jordan_Amman.JPG/500px-Wild_Jordan_Amman.JPG',
+};function getPhoto(p) {
   if (PHOTO_OVERRIDES[p.n]) return {type:'url', val: PHOTO_OVERRIDES[p.n]};
   return {type:'gradient', val: PH_COLORS[p.c], emoji: p.e};
 }
